@@ -27,6 +27,7 @@
 #include <libethereum/BlockQueue.h>
 #include <libethereum/ChainParams.h>
 #include <libethereum/ClientTest.h>
+#include <future>
 #include <thread>
 
 using namespace std;
@@ -103,7 +104,15 @@ bool Test::test_mineBlocks(int _number)
 {
     try
     {
+        std::promise<void> allBlocksImported;
+        int importedBlocks = 0;
+        auto importHandler = m_eth.setOnBlockImport(
+            [_number, &importedBlocks, &allBlocksImported](BlockHeader const&) {
+                if (++importedBlocks == _number)
+                    allBlocksImported.set_value();
+            });
         asClientTest(m_eth).mineBlocks(_number);
+        allBlocksImported.get_future().wait();
     }
     catch (std::exception const&)
     {
