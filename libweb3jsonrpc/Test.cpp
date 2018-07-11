@@ -24,8 +24,10 @@
 #include <jsonrpccpp/common/errors.h>
 #include <jsonrpccpp/common/exception.h>
 #include <libdevcore/CommonJS.h>
+#include <libethereum/BlockQueue.h>
 #include <libethereum/ChainParams.h>
 #include <libethereum/ClientTest.h>
+#include <thread>
 
 using namespace std;
 using namespace dev;
